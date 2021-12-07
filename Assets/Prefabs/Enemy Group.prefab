@@ -609,6 +609,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2369062776193324066}
     m_Modifications:
+    - target: {fileID: -1691895441051581899, guid: 37a0e3e247e65084c9c6d9e3ee360774, type: 3}
+      propertyPath: m_Size.x
+      value: 5.290942
+      objectReference: {fileID: 0}
+    - target: {fileID: -1691895441051581899, guid: 37a0e3e247e65084c9c6d9e3ee360774, type: 3}
+      propertyPath: m_Size.y
+      value: 4.6042447
+      objectReference: {fileID: 0}
+    - target: {fileID: -1691895441051581899, guid: 37a0e3e247e65084c9c6d9e3ee360774, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.012598038
+      objectReference: {fileID: 0}
+    - target: {fileID: -1691895441051581899, guid: 37a0e3e247e65084c9c6d9e3ee360774, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.0117537975
+      objectReference: {fileID: 0}
+    - target: {fileID: -1691895441051581899, guid: 37a0e3e247e65084c9c6d9e3ee360774, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1691895441051581899, guid: 37a0e3e247e65084c9c6d9e3ee360774, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3871865298318731700, guid: 37a0e3e247e65084c9c6d9e3ee360774, type: 3}
       propertyPath: m_Name
       value: Alien

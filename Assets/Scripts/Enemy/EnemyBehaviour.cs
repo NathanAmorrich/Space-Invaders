@@ -5,11 +5,11 @@ using UnityEngine;
 // This script controls the behaviour of each single Alien enemy
 public class EnemyBehaviour : MonoBehaviour
 {
-
+    public AudioSource audioSource;
+    public AudioClip destroySFX;
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -26,6 +26,7 @@ public class EnemyBehaviour : MonoBehaviour
 		//  destroy both this game object and the projectile
         if (otherCollider.tag == "Projectile")
         {
+            audioSource.PlayOneShot(destroySFX);
             Destroy(gameObject);
 			
 			// Get the game object, as a whole, that's attached to the Collider2D component

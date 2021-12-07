@@ -6,6 +6,8 @@ public class EnemyController : MonoBehaviour
 {
     // An array of the enemy GameObjects
     public GameObject[] enemies;
+    public AudioSource ennemyMoveSound;
+   
 
     // The min and max limits on the horizontal X-axis where this game object can move within
     public float minPosX;
@@ -24,6 +26,9 @@ public class EnemyController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //Get the Audio source component from the object.
+        ennemyMoveSound = GetComponent<AudioSource>();
+
         /* Call the function named in the first argument repeatedly
          * Second argument is how long the delay before the first time to call
          * Third argument is how the interval between every time it's called
@@ -83,5 +88,13 @@ public class EnemyController : MonoBehaviour
                 isMovingRight = true;
             }
         }
+
+        //Check if there is still aliens in the group to avoid playing the sound when all aliens are destroyed
+        if (transform.childCount > 0)
+        {
+            ennemyMoveSound.Play();
+        }
+        
+        
     }
 }
