@@ -13,18 +13,13 @@ public class Shooter : MonoBehaviour
     public float laserCooldDown = 1;
     private float timer = 0;
    
-    // Start is called before the first frame update
-    void Start()
-    {
-      
-    }
-
     // Update is called once per frame
     void Update()
     {
         timer += Time.deltaTime;
         
-		// Check if the player pressed the spacebar, mapped to the Jump input in project settings, to make them shoot
+		// Check if the player pressed the spacebar, mapped to the Jump input in project settings,
+        // to make them shoot accorind to the cooldown.
         if (Input.GetButtonDown("Jump") && timer >= laserCooldDown)
         {
             Shoot();
@@ -34,9 +29,6 @@ public class Shooter : MonoBehaviour
 
     void Shoot()
     {
-		// Create an instance of the GameObject referenced by the projectilePrefab variable
-		// When the instance is created, position at the same location where the player currently is (by copying their transform.position),
-		// and don't rotate the instance at all - let it keep its "identity" rotation
         Instantiate(projectilePrefab, gameObject.transform.position, Quaternion.identity);
  
         //Play the laser shot sound

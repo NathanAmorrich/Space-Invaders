@@ -5,10 +5,19 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     // A reference to the Sprite Renderer componenet, holding the player image
-    public SpriteRenderer playerImage;
-    public Image healthBar;
+    public SpriteRenderer playerSprite;
+    public SpriteRenderer playerExplosionSprite;
+    public Image healthBarImage;
+
+    public AudioSource audioSource;
+    public AudioClip playerExplosionSFX;
+    public AudioClip playerDamagedSFX;
+
+    public Text gameEndingTXT;
 
     public float moveSpeed = 5f;
+
+    public bool isDestroyed = false;
 
     // Reference to the main camera that we see the game world through
     private Camera mainCamera;
@@ -19,18 +28,23 @@ public class PlayerController : MonoBehaviour
     // The game screen's right and left edges, used to block the player from going outside screen boundaries
     private float rightScreenEdge;
     private float leftScreenEdge;
-    
     private float maxPosX;
     private float minPosX;
+    private float timerDestroyPlayerObj = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
+        //Hide the explosion sprite;
+        playerExplosionSprite.enabled = false;
+
+        gameEndingTXT = GameObject.Find("Canvas/GameEndingTXT").GetComponent<Text>();
+
         // Get the main camera reference from the Camera class
         mainCamera = Camera.main;
-        healthBar.fillAmount -= 1f / 2f * Time.deltaTime;
+        
         // Calculate the half-width from the player's image boundaries along the horizontal x-axis. The bounds are the total width so we split them in 2
-        playerHalfWidth = playerImage.bounds.size.x * 0.5f;
+        playerHalfWidth = playerSprite.bounds.size.x * 0.5f;
   
         // Get the right-most point on the game screen which is its width (as 'mainCamera.pixelWidth'),
         // and project that point from the screen to the game world (using 'ScreenToWorldPoint' function from the main camera).
@@ -49,30 +63,43 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        healthBar.fillAmount -= 1f / 4f * Time.deltaTime; 
-        // Save the player input as GetAxis to tell which direction is pressed for the Horizontal key mapping (left/right)
-        float inputHl = Input.GetAxis("Horizontal");
-		
-		// Save the players position at this moment in time
-        Vector2 currentPos = gameObject.transform.position;
-
-		// Check if the player pressed right direction (inputHl will be greater than 0)
-		// AND also if the player's current position is still behind (x is less than) the maximum possible X position (the far right)
-        if ((inputHl > 0) && (currentPos.x <= maxPosX))
+        if(isDestroyed == false)
         {
-            // Calculate the player's new position by adding 1 unit to the right of the player's current position
-            Vector2 newPos = currentPos + Vector2.right;
+            // Save the player input as GetAxis to tell which direction is pressed for the Horizontal key mapping (left/right)
+            float inputHl = Input.GetAxis("Horizontal");
 
-			// Apply the new position to the player's position property in the transform componenet
-			// **Don't forget to multiplty the speed by Time.deltaTime to account for different computer hardware
-            gameObject.transform.position = Vector2.MoveTowards(currentPos, newPos, moveSpeed * Time.deltaTime);       
+            // Save the players position at this moment in time
+            Vector2 currentPos = gameObject.transform.position;
+
+            // Check if the player pressed right direction (inputHl will be greater than 0)
+            // AND also if the player's current position is still behind (x is less than) the maximum possible X position (the far right)
+            if ((inputHl > 0) && (currentPos.x <= maxPosX))
+            {
+                // Calculate the player's new position by adding 1 unit to the right of the player's current position
+                Vector2 newPos = currentPos + Vector2.right;
+
+                // Apply the new position to the player's position property in the transform componenet
+                // **Don't forget to multiplty the speed by Time.deltaTime to account for different computer hardware
+                gameObject.transform.position = Vector2.MoveTowards(currentPos, newPos, moveSpeed * Time.deltaTime);
+            }
+            // Do the same as above, but mirrored for the left direction (note the opposite less than/greater than checks)
+            else if (inputHl < 0 && (currentPos.x >= minPosX))
+            {
+                Vector2 newPos = currentPos + Vector2.left;
+
+                gameObject.transform.position = Vector2.MoveTowards(currentPos, newPos, moveSpeed * Time.deltaTime);
+            }
         }
-		// Do the same as above, but mirrored for the left direction (note the opposite less than/greater than checks)
-        else if (inputHl < 0 && (currentPos.x >= minPosX))
-        {
-            Vector2 newPos = currentPos + Vector2.left;
 
-            gameObject.transform.position = Vector2.MoveTowards(currentPos, newPos, moveSpeed * Time.deltaTime);
+        //Waiting 2s after the player explosion
+        else 
+        {
+            timerDestroyPlayerObj += Time.deltaTime;
+
+            if(timerDestroyPlayerObj >= 2)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -82,8 +109,24 @@ public class PlayerController : MonoBehaviour
         //  destroy both this game object and the projectile
         if (otherCollider.tag == "AlienProjectile")
         {
-            Destroy(gameObject);
 
+            //4 Health
+            healthBarImage.fillAmount -= 0.25f;
+
+            audioSource.PlayOneShot(playerDamagedSFX);
+
+            if (healthBarImage.fillAmount == 0)
+            {
+                isDestroyed = true;
+                playerExplosionSprite.enabled = true;
+
+                //Display the game ending text
+                gameEndingTXT.enabled = true;
+                gameEndingTXT.text = "Game Over";
+
+                audioSource.PlayOneShot(playerExplosionSFX);
+            }
+           
             // Get the game object, as a whole, that's attached to the Collider2D component
             Destroy(otherCollider.gameObject);
         }

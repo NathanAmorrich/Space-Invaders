@@ -1,17 +1,16 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 // This script controls the parent game object that groups several Aline enemies as its children
 public class EnemyController : MonoBehaviour
 {
-    // An array of the enemy GameObjects
-    public GameObject[] aliens, alienGroups;
-    public Transform[] AliensG;
-    public AudioSource ennemyMoveSound;
+    // An array of enemy GameObjects
+    public Transform[] AlienGroup;
 
-    public string myName;
- 
-    public EnemyBehaviour enemyBehaviour;
+    public AudioSource ennemyMoveSound;
+    
+    public EnemyBehaviour alienBehaviour;
+
+    public string alienGroupName;
 
     // The min and max limits on the horizontal X-axis where this game object can move within
     public float minPosX;
@@ -25,8 +24,7 @@ public class EnemyController : MonoBehaviour
 
     // A boolean to check which direction the game object is currently moving
     private bool isMovingRight = true;
-    private bool isFrontRowGroup = false;
-
+   
     private float timerPickingRandomAlien = 0f;
 
     // Use this for initialization
@@ -34,67 +32,66 @@ public class EnemyController : MonoBehaviour
     {
         //Get the Audio source component from the object.
         ennemyMoveSound = GetComponent<AudioSource>();
-        
-        /* Call the function named in the first argument repeatedly
-         * Second argument is how long the delay before the first time to call
-         * Third argument is how the interval between every time it's called
-         */
+      
+        //Call the MoveEnemies function every time step.
         InvokeRepeating("MoveEnemies", timeStep, timeStep);
-        myName = gameObject.name;
-        AliensG = new Transform[transform.childCount];
-        
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            AliensG[i] = transform.GetChild(i);
-            print(AliensG[i].gameObject.name);
-        }
+
+        //Get the alien group name.
+        alienGroupName = gameObject.name;
+
+        //Initialize the array size with the number of children and stock each child transform.
+        updateAlienGroup();
     }
     
     private void Update()
     {
         timerPickingRandomAlien += Time.deltaTime;
-
+        
+        //Every 1.25s, make one of the front row's alien shoot.
         if(timerPickingRandomAlien >= 1.25)
         {
             checkOtherAlienGroup();
             timerPickingRandomAlien = 0;
         }
         
+        //If there is no more alien in the group, destroy the object.s
         if (transform.childCount == 0)
         {
             Destroy(gameObject);
         }
     }
 
+    //Check if the game object contains the front alien row.
     private void checkOtherAlienGroup()
     {
-        if(GameObject.Find("Enemies").transform.childCount == 1 || myName == "Enemy Group (2)")
+        if(GameObject.Find("Enemies").transform.childCount == 1 || alienGroupName == "Enemy Group (2)")
         {
             pickRandomAlien();
         }
-        else if(GameObject.Find("Enemies").transform.childCount == 2 && myName == "Enemy Group (1)")
+        else if(GameObject.Find("Enemies").transform.childCount == 2 && alienGroupName == "Enemy Group (1)")
         {
             pickRandomAlien();
         }  
     }
 
+    //Pick a random alien and make it shoot.
     private void pickRandomAlien()
     {
         updateAlienGroup();
-        int randomAlien = Mathf.FloorToInt(Random.Range(0f, AliensG.Length));
-        print(randomAlien);
-        AliensG[randomAlien] = transform.GetChild(randomAlien);
-        EnemyBehaviour test = AliensG[randomAlien].gameObject.GetComponent<EnemyBehaviour>();
-        test.ShootPlayer();
+
+        //Pick a random alien based on the sized of the row.
+        int randomAlien = Mathf.FloorToInt(Random.Range(0f, AlienGroup.Length));
+        alienBehaviour = AlienGroup[randomAlien].gameObject.GetComponent<EnemyBehaviour>();
+        alienBehaviour.ShootPlayer();
     }
 
+    //Initialize/update the array size with the number of children and stock each child transform.
     private void updateAlienGroup()
     {
-        AliensG = new Transform[transform.childCount];
+        AlienGroup = new Transform[transform.childCount];
         for (int i = 0; i < transform.childCount; i++)
         {
-            AliensG[i] = transform.GetChild(i);
-            print(AliensG[i].gameObject.name);
+            AlienGroup[i] = transform.GetChild(i);
         }
     }
 
@@ -152,12 +149,6 @@ public class EnemyController : MonoBehaviour
             }
         }
 
-        //Check if there is still aliens in the group to avoid playing the sound when all aliens are destroyed
-        if (transform.childCount > 0)
-        {
-            ennemyMoveSound.Play();
-        }
-        
-        
+        ennemyMoveSound.Play();
     }
 }

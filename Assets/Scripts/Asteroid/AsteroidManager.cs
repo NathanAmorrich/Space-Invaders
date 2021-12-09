@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AsteroidManager : MonoBehaviour
@@ -13,7 +11,6 @@ public class AsteroidManager : MonoBehaviour
     // How far to move per one step
     private float moveDistance = 0.01f;
     
-    // A boolean to check which direction the game object is currently moving
     void Start()
     {
         InvokeRepeating("MoveAsteroid", Time.deltaTime, Time.deltaTime);
@@ -27,11 +24,10 @@ public class AsteroidManager : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D otherCollider)
     {
-        // Check the tag on the other game object. If it's the projectile's tag,
-        //  destroy both this game object and the projectile
-        if (otherCollider.tag == "Projectile")
+        // Check the tag on the other game object. If it's a projectile's tag, destroys the projectile.
+        if (otherCollider.tag == "Projectile" || otherCollider.tag == "AlienProjectile")
         {
-            // Get the game object, as a whole, that's attached to the Collider2D component
+        
             Destroy(otherCollider.gameObject);
         }
     }
@@ -56,7 +52,8 @@ public class AsteroidManager : MonoBehaviour
             */
         gameObject.transform.position = newPosition;
 
-        if(currentPositionX >= 14)
+        //Destroy the object after moving out of screen.
+        if(currentPositionX >= maxPosX)
         {  
             Destroy(gameObject);
         }
