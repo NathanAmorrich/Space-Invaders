@@ -5,9 +5,13 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     // An array of the enemy GameObjects
-    public GameObject[] enemies;
+    public GameObject[] aliens, alienGroups;
+    public Transform[] AliensG;
     public AudioSource ennemyMoveSound;
-   
+
+    public string myName;
+ 
+    public EnemyBehaviour enemyBehaviour;
 
     // The min and max limits on the horizontal X-axis where this game object can move within
     public float minPosX;
@@ -21,20 +25,79 @@ public class EnemyController : MonoBehaviour
 
     // A boolean to check which direction the game object is currently moving
     private bool isMovingRight = true;
+    private bool isFrontRowGroup = false;
 
+    private float timerPickingRandomAlien = 0f;
 
     // Use this for initialization
     void Start()
     {
         //Get the Audio source component from the object.
         ennemyMoveSound = GetComponent<AudioSource>();
-
+        
         /* Call the function named in the first argument repeatedly
          * Second argument is how long the delay before the first time to call
          * Third argument is how the interval between every time it's called
-         */ 
+         */
         InvokeRepeating("MoveEnemies", timeStep, timeStep);
+        myName = gameObject.name;
+        AliensG = new Transform[transform.childCount];
+        
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            AliensG[i] = transform.GetChild(i);
+            print(AliensG[i].gameObject.name);
+        }
     }
+    
+    private void Update()
+    {
+        timerPickingRandomAlien += Time.deltaTime;
+
+        if(timerPickingRandomAlien >= 1.25)
+        {
+            checkOtherAlienGroup();
+            timerPickingRandomAlien = 0;
+        }
+        
+        if (transform.childCount == 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void checkOtherAlienGroup()
+    {
+        if(GameObject.Find("Enemies").transform.childCount == 1 || myName == "Enemy Group (2)")
+        {
+            pickRandomAlien();
+        }
+        else if(GameObject.Find("Enemies").transform.childCount == 2 && myName == "Enemy Group (1)")
+        {
+            pickRandomAlien();
+        }  
+    }
+
+    private void pickRandomAlien()
+    {
+        updateAlienGroup();
+        int randomAlien = Mathf.FloorToInt(Random.Range(0f, AliensG.Length));
+        print(randomAlien);
+        AliensG[randomAlien] = transform.GetChild(randomAlien);
+        EnemyBehaviour test = AliensG[randomAlien].gameObject.GetComponent<EnemyBehaviour>();
+        test.ShootPlayer();
+    }
+
+    private void updateAlienGroup()
+    {
+        AliensG = new Transform[transform.childCount];
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            AliensG[i] = transform.GetChild(i);
+            print(AliensG[i].gameObject.name);
+        }
+    }
+
 
     // Moves the game object this script is on. And since this game object has the enemies as children,
     // they will also be moved with it by the same amount of distance
