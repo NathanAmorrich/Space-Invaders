@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PowerUp : MonoBehaviour
 {
-    private float moveDistance = 0.005f;
+    private float moveDistance = 0.05f;
 
     public float random;
 

@@ -9,7 +9,7 @@ public class AsteroidManager : MonoBehaviour
     private float maxPosX = 14;
 
     // How far to move per one step
-    private float moveDistance = 0.01f;
+    private float moveDistance = 0.1f;
     
     void Start()
     {

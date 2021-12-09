@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public bool isShootingSpeedIncreased = false;
     public bool isMoveSpeedIncreased = false;
 
-    public int maxScore = 1400;
+    public int maxScore = 1350;
 
     private PlayerController playerParameters;
     private Shooter shootParameters;
@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour
         timerAsteroid += Time.deltaTime;
         timerPowerUp += Time.deltaTime;
 
-        //Spawn an asteroid every 5s with a random y position.
-        if (timerAsteroid >= 5)
+        //Spawn an asteroid every 8s with a random y position.
+        if (timerAsteroid >= 8)
         {
             Instantiate(asteroid, new Vector3(-14, Random.Range(-2.15f, 0.25f), 0), Quaternion.identity);
             timerAsteroid = 0;
