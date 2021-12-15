@@ -1,5 +1,5 @@
 # Simmer.io link
-
+https://simmer.io/@Nathamorr/space-invaders-v2
 
 # Features added
 
@@ -10,6 +10,7 @@ Graphics:
 + Upgrade sprite.
 + AlienProjectile sprite.
 + Explosion sprite for player ship.
++ Upgrade timer before removal text.
 
 Sound:
 + Move sound when aliens' group moves.
@@ -22,6 +23,7 @@ UI:
 + Health bar.
 + Upgrade pop-up.
 + End game text (win/lose).
++ Restart button.
 
 GamePlay:
 + Crossing asteroid.
