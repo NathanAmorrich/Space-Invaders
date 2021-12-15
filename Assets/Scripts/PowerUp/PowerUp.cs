@@ -15,17 +15,16 @@ public class PowerUp : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("MovePowerUp", Time.deltaTime, Time.deltaTime);
+        //InvokeRepeating("MovePowerUp", Time.deltaTime, Time.deltaTime);
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        MovePowerUp();
         transform.Rotate(Vector3.back * 50 * Time.deltaTime, Space.World);
     }
-
-
 
     void MovePowerUp()
     {

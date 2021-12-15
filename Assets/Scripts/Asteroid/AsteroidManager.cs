@@ -9,16 +9,17 @@ public class AsteroidManager : MonoBehaviour
     private float maxPosX = 14;
 
     // How far to move per one step
-    private float moveDistance = 0.1f;
+    private float moveDistance = 0.05f;
     
     void Start()
     {
-        InvokeRepeating("MoveAsteroid", Time.deltaTime, Time.deltaTime);
+        //InvokeRepeating("MoveAsteroid", Time.deltaTime, Time.deltaTime);
     }
 
     // Update is called once per frame
     void Update()
     {
+        MoveAsteroid();
         //Rotate the asteroid around its z-axis.
         transform.Rotate(Vector3.forward * 25 * Time.deltaTime, Space.World);
     }
